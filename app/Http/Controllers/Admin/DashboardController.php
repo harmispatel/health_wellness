@@ -43,10 +43,8 @@ class DashboardController extends Controller
                         $image_url = $this->addSingleImage('advertiseMent', 'advertise_image', $file, $old_image = '');
                         $input['advertise_image'] = $image_url;
                     }
-
                     $saveadvertiseMent = Setting::create($input);
-                } else {
-                
+                } else {            
                     if ($advertiseMent->advertise_image) {
                         File::delete('public/images/uploads/advertise_image/' . $advertiseMent->advertise_image);
                     }
@@ -58,6 +56,7 @@ class DashboardController extends Controller
                     }
 
                     $advertiseMent->update($input);
+
                 }
             }
 

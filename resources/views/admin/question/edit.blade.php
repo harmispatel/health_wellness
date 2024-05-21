@@ -24,7 +24,7 @@
     {{-- Clients Card --}}
     <div class="col-md-12">
         <div class="card">
-            <form class="form" action="{{ route('question.update') }} " method="POST" enctype="multipart/form-data">
+            <form class="form" action="{{ route('question.update') }} " method="POST" enctype="multipart/form-data" id="questionForm" novalidate>
 
                 <input type="hidden" name="id" id="id" value="{{ encrypt($question->id) }}">
                 <div class="card-body">
@@ -36,8 +36,6 @@
                             </div>
                             <div class="form_box_info">
                                 <div class="row">
-
-
                                     <div class="col-md-6 mb-3">
                                         <div class="form-group">
                                             <label for="question_name"
@@ -53,7 +51,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    {{-- <div class="col-md-6 mb-3">
                                         <div class="form-group">
                                             <label for="plan_type"
                                                 class="form-label"><strong>{{ trans('label.plan_type') }}</strong>
@@ -68,7 +66,7 @@
                                             </select>
                                             <div id="plan_type_error" class="invalid-feedback"></div>
                                         </div>
-                                    </div>
+                                    </div> --}}
 
                                     <div class="col-md-12 mb-3 additional-info text-end">
                                         <a class="btn btn-sm new-category custom-btn" id="addOption"><i
@@ -76,25 +74,72 @@
                                     </div>
                                     <div class="row">
                                         <!-- Populate options -->
-                                        @foreach ($questionOptions as $option)
-                                            <div class="col-md-6">
+                                        @foreach ($questionOptions as $index => $option)
+                                            <div class="col-md-12">
                                                 <div class="row align-items-end added-option">
                                                     <!-- Populate option_name and icon if they exist in your Option model -->
-                                                    <div class="col-md-10 mb-3 additional-info">
+                                                    <div class="col-md-6 mb-3 additional-info mt-3">
                                                         <label for="option_name"
-                                                            class="form-label"><strong>{{ trans('label.option_name') }}</strong></label>
+                                                            class="form-label"><strong> -- {{ trans('label.option_name') }} --- </strong></label>
                                                         <input type="text" name="option_name[]" id="option_name1"
                                                             value="{{ $option->option_name }}" class="form-control">
 
                                                     </div>
-                                                    <div class="col-md-10 mb-3 additional-info">
+                                                    <div class="col-md-6 mb-3 additional-info mt-3">
                                                         <label for="description"
-                                                            class="form-label"><strong>{{ trans('label.description') }}</strong></label>
+                                                            class="form-label"><strong> --- {{ trans('label.description') }} --- </strong></label>
                                                         <input type="text" name="description[]" id="description"
                                                             value="{{ $option->description }}" class="form-control">
-
                                                     </div>
-                                                    <div class="col-md-2 mb-3 pt-2 additional-info">
+
+                                                    <div class="col-md-5 additional-info mt-2">
+                                                        <label for="Workput" class="form-label"><strong>*
+                                                            </strong><strong>{{ trans('label.workout_plan') }}
+                                                            </strong></label>
+                                                    </div>
+                                                    <div class="col-md-5 additional-info mt-2">
+                                                        <label for="Workput" class="form-label"><strong>*
+                                                            </strong><strong>{{ trans('label.diet_plan') }}
+                                                            </strong></label>
+                                                    </div>
+
+                                                    <div class="col-md-5 additional-info mt-2">
+                                                        @if (empty($option->workout_plan))
+                                                            @for ($day = 1; $day <= 7; $day++)
+                                                                <div class="form-group mt-2">
+                                                                    <label for="workout_plan" class="form-label"><strong>{{ trans('label.day_' . $day) }}</strong></label>
+                                                                    <input type="text" name="workout_plan[{{ $index }}][]" id="workout_plan" class="form-control">
+                                                                </div>
+                                                            @endfor
+                                                        @else
+                                                            @php $workout_plan = json_decode($option->workout_plan) @endphp
+                                                            @foreach ($workout_plan as $day => $workout)
+                                                                <div class="form-group mt-2">
+                                                                    <label for="workout_plan" class="form-label"><strong>{{ trans('label.day_' . ($day + 1)) }}</strong></label>
+                                                                    <input type="text" name="workout_plan[{{ $index }}][]" id="workout_plan" class="form-control" value="{{ $workout }}">
+                                                                </div>
+                                                            @endforeach
+                                                        @endif
+                                                    </div>
+                                                    <div class="col-md-5 additional-info mt-2">
+                                                        @if (empty($option->diet_plan))
+                                                            @for ($day = 1; $day <= 7; $day++)
+                                                                <div class="form-group mt-2">
+                                                                    <label for="diet_plan" class="form-label"><strong>{{ trans('label.day_' . $day) }}</strong></label>
+                                                                    <input type="text" name="diet_plan[{{ $index }}][]" id="diet_plan" class="form-control">
+                                                                </div>
+                                                            @endfor
+                                                        @else
+                                                            @php $diet_plan = json_decode($option->diet_plan) @endphp
+                                                            @foreach ($diet_plan as $day => $diet)
+                                                                <div class="form-group mt-2">
+                                                                    <label for="diet_plan" class="form-label"><strong>{{ trans('label.day_' . ($day + 1)) }}</strong></label>
+                                                                    <input type="text" name="diet_plan[{{ $index }}][]" id="diet_plan" class="form-control" value="{{ $diet }}">
+                                                                </div>
+                                                            @endforeach
+                                                        @endif
+                                                    </div>
+                                                    <div class="col-md-1 mt-3 additional-info">
                                                         <button class="btn btn-sm btn-danger cancel-option"
                                                             onclick="removeOption(this)"><i class="bi bi-trash"
                                                                 aria-hidden="true"></i></button>
@@ -143,25 +188,154 @@
             $('#addOption').on('click', function(e) {
                 e.preventDefault();
 
-                var field = '<div class="col-md-6 added-option align-content-center">' +
+                var index = $('.added-option').length;
+
+                var field = '<div class="col-md-12 added-option align-content-center">' +
                     '<div class="row  align-items-end">' +
-                    '<div class="col-md-10 mb-3 additional-info">' +
+                    '<div class="col-md-6 mb-3 additional-info mt-2">' +
                     '<div class="form-group">' +
                     '<label for="option_name" class="form-label">' +
-                    '<strong>{{ trans('label.option_name') }}</strong>' +
+                    '<strong> --- {{ trans('label.option_name') }} --- </strong>' +
                     '</label>' +
-                    '<input type="text" name="option_name[]" class="form-control" />' +
+                    '<input type="text" name="option_name[' + index + ']" class="form-control" />' +
                     '</div>' +
                     '</div>' +
-                    '<div class="col-md-10 mb-3 additional-info">' +
+                    '<div class="col-md-6 mb-3 additional-info mt-2">' +
                     '<div class="form-group">' +
                     '<label for="description" class="form-label">' +
-                    '<strong>{{ trans('label.description') }}</strong>' +
+                    '<strong> --- {{ trans('label.description') }} --- </strong>' +
                     '</label>' +
-                    '<input type="text" name="description[]" class="form-control" />' +
+                    '<input type="text" name="description[' + index + ']" class="form-control" />' +
                     '</div>' +
                     '</div>' +
-                    '<div class="col-md-2 mb-3 pt-2 additional-info">' +
+                    '<div class="col-md-6 mb-3 additional-info">' +
+                    '<div class="form-group">' +
+                    '<label for="workout_plan" class="form-label">' +
+                    '<strong>* </strong><strong>{{ trans('label.workout_plan') }}</strong>' +
+                    '</label>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="col-md-5 mb-3 additional-info">' +
+                    '<div class="form-group">' +
+                    '<label for="diet_plan" class="form-label">' +
+                    '<strong>* </strong><strong>{{ trans('label.diet_plan') }}</strong>' +
+                    '</label>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="col-md-5 mb-3 additional-info">' +
+                    '<div class="form-group">' +
+                    '<label for="workout_plan" class="form-label">' +
+                    '<strong>{{ trans('label.day_1') }}</strong>' +
+                    '</label>' +
+                    '<input name="workout_plan[' + index + '][]" class="form-control"></input>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="col-md-5 mb-3 additional-info">' +
+                    '<div class="form-group">' +
+                    '<label for="diet_plan" class="form-label">' +
+                    '<strong>{{ trans('label.day_1') }}</strong>' +
+                    '</label>' +
+                    '<input name="diet_plan[' + index + '][]" class="form-control"></input>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="col-md-5 mb-3 additional-info">' +
+                    '<div class="form-group">' +
+                    '<label for="workout_plan" class="form-label">' +
+                    '<strong>{{ trans('label.day_2') }}</strong>' +
+                    '</label>' +
+                    '<input name="workout_plan[' + index + '][]" class="form-control"></input>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="col-md-5 mb-3 additional-info">' +
+                    '<div class="form-group">' +
+                    '<label for="diet_plan" class="form-label">' +
+                    '<strong>{{ trans('label.day_2') }}</strong>' +
+                    '</label>' +
+                    '<input name="diet_plan[' + index + '][]" class="form-control"></input>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="col-md-5 mb-3 additional-info">' +
+                    '<div class="form-group">' +
+                    '<label for="workout_plan" class="form-label">' +
+                    '<strong>{{ trans('label.day_3') }}</strong>' +
+                    '</label>' +
+                    '<input name="workout_plan[' + index + '][]" class="form-control"></input>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="col-md-5 mb-3 additional-info">' +
+                    '<div class="form-group">' +
+                    '<label for="diet_plan" class="form-label">' +
+                    '<strong>{{ trans('label.day_3') }}</strong>' +
+                    '</label>' +
+                    '<input name="diet_plan[' + index + '][]" class="form-control"></input>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="col-md-5 mb-3 additional-info">' +
+                    '<div class="form-group">' +
+                    '<label for="workout_plan" class="form-label">' +
+                    '<strong>{{ trans('label.day_4') }}</strong>' +
+                    '</label>' +
+                    '<input name="workout_plan[' + index + '][]" class="form-control"></input>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="col-md-5 mb-3 additional-info">' +
+                    '<div class="form-group">' +
+                    '<label for="diet_plan" class="form-label">' +
+                    '<strong>{{ trans('label.day_4') }}</strong>' +
+                    '</label>' +
+                    '<input name="diet_plan[' + index + '][]" class="form-control"></input>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="col-md-5 mb-3 additional-info">' +
+                    '<div class="form-group">' +
+                    '<label for="workout_plan" class="form-label">' +
+                    '<strong>{{ trans('label.day_5') }}</strong>' +
+                    '</label>' +
+                    '<input name="workout_plan[' + index + '][]" class="form-control"></input>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="col-md-5 mb-3 additional-info">' +
+                    '<div class="form-group">' +
+                    '<label for="diet_plan" class="form-label">' +
+                    '<strong>{{ trans('label.day_5') }}</strong>' +
+                    '</label>' +
+                    '<input name="diet_plan[' + index + '][]" class="form-control"></input>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="col-md-5 mb-3 additional-info">' +
+                    '<div class="form-group">' +
+                    '<label for="workout_plan" class="form-label">' +
+                    '<strong>{{ trans('label.day_6') }}</strong>' +
+                    '</label>' +
+                    '<input name="workout_plan[' + index + '][]" class="form-control"></input>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="col-md-5 mb-3 additional-info">' +
+                    '<div class="form-group">' +
+                    '<label for="diet_plan" class="form-label">' +
+                    '<strong>{{ trans('label.day_6') }}</strong>' +
+                    '</label>' +
+                    '<input name="diet_plan[' + index + '][]" class="form-control"></input>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="col-md-5 mb-3 additional-info">' +
+                    '<div class="form-group">' +
+                    '<label for="workout_plan" class="form-label">' +
+                    '<strong>{{ trans('label.day_7') }}</strong>' +
+                    '</label>' +
+                    '<input name="workout_plan[' + index + '][]" class="form-control"></input>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="col-md-5 mb-3 additional-info">' +
+                    '<div class="form-group">' +
+                    '<label for="diet_plan" class="form-label">' +
+                    '<strong>{{ trans('label.day_7') }}</strong>' +
+                    '</label>' +
+                    '<input name="diet_plan[' + index + '][]" class="form-control"></input>' +
+                    '</div>' +
+                    '</div>' +
+
+                    '<div class="col-md-1 mb-3 pt-2 additional-info">' +
                     '<div class="form-group">' +
                     '<button class="btn btn-sm  btn-danger cancel-option"><i class="bi bi-trash" aria-hidden="true"></i></button>' +
                     '</div>' +
@@ -188,6 +362,25 @@
             $(button).closest('.added-option').remove();
         }
 
+        $('#questionForm').on('submit', function(event) {
+                let allFieldsFilled = true;
+                const requiredFields = $('#questionForm .form-control');
+
+                requiredFields.each(function() {
+                    if ($(this).val().trim() === '') {
+                        allFieldsFilled = false;
+                        $(this).addClass('is-invalid'); // Add invalid class to show error
+                    } else {
+                        $(this).removeClass('is-invalid'); // Remove invalid class if field is filled
+                    }
+                });
+
+                if (!allFieldsFilled) {
+                    event.preventDefault(); // Prevent form submission
+                    alert('All fields are required');
+                }
+           });
+
         // question_id and question_name required
 
         $('form').submit(function(e) {
@@ -200,11 +393,11 @@
                 }
             });
 
-            // Check if at least two fields are filled
-            if (filledFields < 1) {
-                e.preventDefault(); // Prevent form submission
-                alert('Please fill out at least Option Name one fields.');
-            }
+            // // Check if at least two fields are filled
+            // if (filledFields > 1) {
+            //     e.preventDefault(); // Prevent form submission
+            //     alert('Please fill out at least Option Name one fields.');
+            // }
         });
     </script>
 

@@ -18,6 +18,8 @@ class CreateQuestionOptionsTable extends Migration
             $table->unsignedBigInteger('question_id')->nullable();
             $table->string('option_name')->nullable();
             $table->string('description')->nullable();
+            $table->longText('workout_plan')->nullable();
+            $table->longText('diet_plan')->nullable();
             $table->foreign('question_id')->references('id')->on('questions')->cascadeOnDelete();
             $table->timestamps();
         });

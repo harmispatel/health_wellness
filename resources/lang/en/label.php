@@ -77,4 +77,15 @@ return [
   'Send_Password_Reset_Link' => 'Send Password Reset Link',
   'advertisement' => 'Advertisement',
   'advertisement_detail' => 'Advertisement Detail',
+  'day_1' => "Day 1",
+  'day_2' => "Day 2",
+  'day_3' => "Day 3",
+  'day_4' => "Day 4",
+  'day_5' => "Day 5",
+  'day_6' => "Day 6",
+  'day_7' => "Day 7",
+  'workout_plan' => 'Workput Plan',
+  'diet_plan' => 'Diet Plan'
+
+
 ];

@@ -49,37 +49,46 @@ class QuestionController extends Controller
     }
 
     public function store(Request $request){
+     
         try {
-           
-            $input = $request->except('_token','option_name','description');
+            $input = $request->except('_token','option_name','description','workout_plan','diet_plan');
 
+      
+         
             $question = Question::create($input);
-
-            if ($request->has('option_name') && $request->has('description')) {
+          
+         
+            if ($request->has('option_name') && $request->has('description') && $request->has('workout_plan') && $request->has('diet_plan')) {
                 $optionNames = $request->option_name;
                 $descriptions = $request->description;
-                
+                $workoutPlans = $request->workout_plan; // Corrected variable name
+                $dietPlans = $request->diet_plan; // Corrected variable name
+    
                 foreach ($optionNames as $index => $optionName) {
-                    // Check if $optionName is not null or an empty string
                     if ($optionName !== null && $optionName !== '') {
-                        // Check if description exists for this index
                         $description = isset($descriptions[$index]) ? $descriptions[$index] : '';
-                        
+                        $workoutPlan = isset($workoutPlans[$index]) ? json_encode($workoutPlans[$index]) : [];
+                        $dietPlan = isset($dietPlans[$index]) ? json_encode($dietPlans[$index]) : [];
+                
                         $questionOption = new QuestionOption;
                         $questionOption->question_id = $question->id;
                         $questionOption->option_name = $optionName;
                         $questionOption->description = $description;
+                        $questionOption->workout_plan = $workoutPlan;
+                        $questionOption->diet_plan = $dietPlan;
                         $questionOption->save();
                     }
-                }
+                }                
+                
             }
-            return redirect()->route('question.index')->with('message', 'Question Saved SuccessFully');
-
+            return redirect()->route('question.index')->with('message', 'Question Saved Successfully');
         } catch (\Throwable $th) {
             dd($th);
             return redirect()->route('question.index')->with('error', 'Internal Server Error');
         }
     }
+    
+    
 
     public function edit($id){
         $id = decrypt($id);
@@ -111,12 +120,13 @@ class QuestionController extends Controller
              //  Delete records whose IDs are not in the $existingOptionIds array
              $questionOptionID =  QuestionOption::where('question_id', $id)->delete();
 
-
             // $existingOptionIds = [];
 
             if ($request->has('option_name')) {
                 $optionNames = $request->option_name;
                 $descriptions = $request->description;
+                $workoutPlans = $request->workout_plan; // Corrected variable name
+                $dietPlans = $request->diet_plan; // Corrected variable name
 
                 // Check if $optionNames and $icons are arrays before using count()
                 if (is_array($optionNames) && count($optionNames) && is_array($descriptions) && count($descriptions)) {
@@ -124,12 +134,16 @@ class QuestionController extends Controller
                         // Check if $optionName is not null or an empty string
 
                         $description = isset($descriptions[$index]) ? $descriptions[$index] : '';
+                        $workoutPlan = isset($workoutPlans[$index]) ? json_encode($workoutPlans[$index]) : [];
+                        $dietPlan = isset($dietPlans[$index]) ? json_encode($dietPlans[$index]) : [];
 
                         if ($optionName !== null && $optionName !== '') {
                             $questionOption = new QuestionOption;
                             $questionOption->question_id = $question->id;
                             $questionOption->option_name = $optionName;
                             $questionOption->description = $description;
+                            $questionOption->workout_plan = $workoutPlan;
+                            $questionOption->diet_plan = $dietPlan;
                             $questionOption->save();
                         }
                     }

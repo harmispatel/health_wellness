@@ -33,17 +33,12 @@ trait ImageTrait
         // Upload New Image
         if ($file != null)
         {
-
-
             $filename = $image_name."_".$this->randomMediaName(5).".".$file->getClientOriginalExtension();
-
 
             // Image Upload Path
             $image_path = public_path().'/images/uploads/'.$path;
 
             // Get Image Path
-
-
 
             //     // $image->save($image_path.'/'.$filename);
                 $file->move($image_path, $filename);
