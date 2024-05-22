@@ -78,8 +78,7 @@
                                     <div class="col-md-6 additional-info">
                                         <div class="form-group">
                                             <label for="description" class="form-label"><strong> -----
-                                                    {{ trans('label.description') }} ----- <span
-                                                        class="text-danger">*</span></strong></label>
+                                                    {{ trans('label.description') }} ----- </strong></label>
                                             <input type="text" name="description[]" id="description"
                                                 class="form-control" />
 
@@ -95,28 +94,28 @@
                                     </div>
 
                                     @php
-                                    $days = [
-                                        'day_1' => trans('label.day_1'),
-                                        'day_2' => trans('label.day_2'),
-                                        'day_3' => trans('label.day_3'),
-                                        'day_4' => trans('label.day_4'),
-                                        'day_5' => trans('label.day_5'),
-                                        'day_6' => trans('label.day_6'),
-                                        'day_7' => trans('label.day_7'),
-                                    ];
-                                @endphp
+                                        $days = [
+                                            'day_1' => trans('label.day_1'),
+                                            'day_2' => trans('label.day_2'),
+                                            'day_3' => trans('label.day_3'),
+                                            'day_4' => trans('label.day_4'),
+                                            'day_5' => trans('label.day_5'),
+                                            'day_6' => trans('label.day_6'),
+                                            'day_7' => trans('label.day_7'),
+                                        ];
+                                    @endphp
 
                                 @foreach ($days as $day_key => $day_label)
                                     <div class="col-md-6 additional-info mt-2">
                                         <div class="form-group">
                                             <label for="workout_plan" class="form-label"><strong>{{ $day_label }}</strong></label>
-                                            <input type="text" name="workout_plan[0][]" id="workout_plan" class="form-control" />
+                                            <input type="text" name="workout_plan[0][{{ $day_key }}]" id="workout_plan" class="form-control" />
                                         </div>
                                     </div>
                                     <div class="col-md-6 additional-info mt-2">
                                         <div class="form-group">
                                             <label for="diet_plan" class="form-label"><strong>{{ $day_label }}</strong></label>
-                                            <input type="text" name="diet_plan[0][]" id="diet_plan" class="form-control" />
+                                            <input type="text" name="diet_plan[0][{{ $day_key }}]" id="diet_plan" class="form-control" />
                                         </div>
                                     </div>
                                 @endforeach
@@ -204,7 +203,7 @@
                     '<label for="workout_plan" class="form-label">' +
                     '<strong>{{ trans('label.day_1') }}</strong>' +
                     '</label>' +
-                    '<input name="workout_plan[' + optionIndex + '][]" class="form-control"></input>' +
+                    '<input name="workout_plan[' + optionIndex + '][day_1]" class="form-control"></input>' +
                     '</div>' +
                     '</div>' +
                     '</div>' +
@@ -216,7 +215,7 @@
                     '<label for="diet_plan" class="form-label">' +
                     '<strong>{{ trans('label.day_1') }}</strong>' +
                     '</label>' +
-                    '<input name="diet_plan[' + optionIndex + '][]" class="form-control"></input>' +
+                    '<input name="diet_plan[' + optionIndex + '][day_1]" class="form-control"></input>' +
                     '</div>' +
                     '</div>' +
                     '</div>' +
@@ -228,7 +227,7 @@
                     '<label for="workout_plan" class="form-label">' +
                     '<strong>{{ trans('label.day_2') }}</strong>' +
                     '</label>' +
-                    '<input name="workout_plan[' + optionIndex + '][]" class="form-control"></input>' +
+                    '<input name="workout_plan[' + optionIndex + '][day_2]" class="form-control"></input>' +
                     '</div>' +
                     '</div>' +
                     '</div>' +
@@ -240,7 +239,7 @@
                     '<label for="diet_plan" class="form-label">' +
                     '<strong>{{ trans('label.day_2') }}</strong>' +
                     '</label>' +
-                    '<input name="diet_plan[' + optionIndex + '][]" class="form-control"></input>' +
+                    '<input name="diet_plan[' + optionIndex + '][day_2]" class="form-control"></input>' +
                     '</div>' +
                     '</div>' +
                     '</div>' +
@@ -252,7 +251,7 @@
                     '<label for="workout_plan" class="form-label">' +
                     '<strong>{{ trans('label.day_3') }}</strong>' +
                     '</label>' +
-                    '<input name="workout_plan[' + optionIndex + '][]" class="form-control"></input>' +
+                    '<input name="workout_plan[' + optionIndex + '][day_3]" class="form-control"></input>' +
                     '</div>' +
                     '</div>' +
                     '</div>' +
@@ -264,7 +263,7 @@
                     '<label for="diet_plan" class="form-label">' +
                     '<strong>{{ trans('label.day_3') }}</strong>' +
                     '</label>' +
-                    '<input name="diet_plan[' + optionIndex + '][]" class="form-control"></input>' +
+                    '<input name="diet_plan[' + optionIndex + '][day_3]" class="form-control"></input>' +
                     '</div>' +
                     '</div>' +
                     '</div>' +
@@ -276,7 +275,7 @@
                     '<label for="workout_plan" class="form-label">' +
                     '<strong>{{ trans('label.day_4') }}</strong>' +
                     '</label>' +
-                    '<input name="workout_plan[' + optionIndex + '][]" class="form-control"></input>' +
+                    '<input name="workout_plan[' + optionIndex + '][day_4]" class="form-control"></input>' +
                     '</div>' +
                     '</div>' +
                     '</div>' +
@@ -288,7 +287,7 @@
                     '<label for="diet_plan" class="form-label">' +
                     '<strong>{{ trans('label.day_4') }}</strong>' +
                     '</label>' +
-                    '<input name="diet_plan[' + optionIndex + '][]" class="form-control"></input>' +
+                    '<input name="diet_plan[' + optionIndex + '][day_4]" class="form-control"></input>' +
                     '</div>' +
                     '</div>' +
                     '</div>' +
@@ -300,7 +299,7 @@
                     '<label for="workout_plan" class="form-label">' +
                     '<strong>{{ trans('label.day_5') }}</strong>' +
                     '</label>' +
-                    '<input name="workout_plan[' + optionIndex + '][]" class="form-control"></input>' +
+                    '<input name="workout_plan[' + optionIndex + '][day_5]" class="form-control"></input>' +
                     '</div>' +
                     '</div>' +
                     '</div>' +
@@ -312,7 +311,7 @@
                     '<label for="diet_plan" class="form-label">' +
                     '<strong>{{ trans('label.day_5') }}</strong>' +
                     '</label>' +
-                    '<input name="diet_plan[' + optionIndex + '][]" class="form-control"></input>' +
+                    '<input name="diet_plan[' + optionIndex + '][day_5]" class="form-control"></input>' +
                     '</div>' +
                     '</div>' +
                     '</div>' +
@@ -324,7 +323,7 @@
                     '<label for="workout_plan" class="form-label">' +
                     '<strong>{{ trans('label.day_6') }}</strong>' +
                     '</label>' +
-                    '<input name="workout_plan[' + optionIndex + '][]" class="form-control"></input>' +
+                    '<input name="workout_plan[' + optionIndex + '][day_6]" class="form-control"></input>' +
                     '</div>' +
                     '</div>' +
                     '</div>' +
@@ -336,7 +335,7 @@
                     '<label for="diet_plan" class="form-label">' +
                     '<strong>{{ trans('label.day_6') }}</strong>' +
                     '</label>' +
-                    '<input name="diet_plan[' + optionIndex + '][]" class="form-control"></input>' +
+                    '<input name="diet_plan[' + optionIndex + '][day_6]" class="form-control"></input>' +
                     '</div>' +
                     '</div>' +
                     '</div>' +
@@ -348,7 +347,7 @@
                     '<label for="workout_plan" class="form-label">' +
                     '<strong>{{ trans('label.day_7') }}</strong>' +
                     '</label>' +
-                    '<input name="workout_plan[' + optionIndex + '][]" class="form-control"></input>' +
+                    '<input name="workout_plan[' + optionIndex + '][day_7]" class="form-control"></input>' +
                     '</div>' +
                     '</div>' +
                     '</div>' +
@@ -360,7 +359,7 @@
                     '<label for="diet_plan" class="form-label">' +
                     '<strong>{{ trans('label.day_7') }}</strong>' +
                     '</label>' +
-                    '<input name="diet_plan[' + optionIndex + '][]" class="form-control"></input>' +
+                    '<input name="diet_plan[' + optionIndex + '][day_7]" class="form-control"></input>' +
                     '</div>' +
                     '</div>' +
                     '</div>' +
@@ -401,7 +400,7 @@
 
             $('#questionForm').on('submit', function(event) {
                 let allFieldsFilled = true;
-                const requiredFields = $('#questionForm .form-control');
+                const requiredFields = $('#questionForm .form-control').not('[name^="description"]');
 
                 requiredFields.each(function() {
                     if ($(this).val().trim() === '') {

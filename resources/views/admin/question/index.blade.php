@@ -49,7 +49,6 @@
                                                     <tr>
                                                         <th>{{ trans('label.id') }}</th>
                                                         <th>{{ trans('label.question_name') }}</th>
-                                                        <th>{{ trans('label.plan_type') }}</th>
                                                         <th>{{ trans('label.actions') }}</th>
                                                     </tr>
                                                 </thead>
@@ -90,10 +89,6 @@
                         data: 'question_name',
                         name: 'question_name',
 
-                    },
-                    {
-                        data: 'plan_type',
-                        name: 'plan_type',
                     },
                     {
                         data: 'actions',

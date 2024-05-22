@@ -16,15 +16,6 @@ class QuestionController extends Controller
 
                 return DataTables::of($allQuestion)
                         ->addIndexColumn()
-                        ->addColumn('plan_type',function($question){
-                            if($question->plan_type == 0){
-                                return 'Diet Plan';
-                            }elseif($question->plan_type == 1){
-                                return 'Workout Plan';
-                            }else{
-                                return '--';
-                            }
-                        })
                         ->addColumn('actions',function($question){
                             $action_html = '<div class="btn-group">';
                             $action_html .= '<a href=' . route("question.edit", ["id" => encrypt($question->id)]) . ' class="btn btn-sm custom-btn me-1"> <i class="bi bi-pencil" aria-hidden="true"></i></a>';
@@ -33,7 +24,7 @@ class QuestionController extends Controller
                             $action_html .= '</div>';
                             return $action_html;
                         })
-                        ->rawColumns(['actions','plan_type'])
+                        ->rawColumns(['actions'])
                         ->make(true);
              }
              return view('admin.question.index');
@@ -53,11 +44,8 @@ class QuestionController extends Controller
         try {
             $input = $request->except('_token','option_name','description','workout_plan','diet_plan');
 
-      
-         
             $question = Question::create($input);
-          
-         
+           
             if ($request->has('option_name') && $request->has('description') && $request->has('workout_plan') && $request->has('diet_plan')) {
                 $optionNames = $request->option_name;
                 $descriptions = $request->description;
@@ -91,6 +79,7 @@ class QuestionController extends Controller
     
 
     public function edit($id){
+        
         $id = decrypt($id);
         try {
             $question = Question::find($id);
@@ -103,59 +92,72 @@ class QuestionController extends Controller
         
     }
 
-    public function update(Request $request){
+    public function update(Request $request)
+{
+    $id = decrypt($request->id);
 
-        $id = decrypt($request->id);
+    try {
+        $question = Question::find($id);
 
-        try {
-
-           $question = question::find($id);
-
-           if ($question) {
-            $question->update([               
+        if ($question) {
+            $question->update([
                 'question_name' => $request->question_name,
                 'plan_type' => $request->plan_type,
             ]);
-           
-             //  Delete records whose IDs are not in the $existingOptionIds array
-             $questionOptionID =  QuestionOption::where('question_id', $id)->delete();
 
-            // $existingOptionIds = [];
+            // Fetch existing question options
+            $existingQuestionOptions = QuestionOption::where('question_id', $id)->get();
 
+            // Keep track of existing option IDs
+            $existingOptionIds = $existingQuestionOptions->pluck('id')->toArray();
+
+            // Iterate through the submitted option data
             if ($request->has('option_name')) {
                 $optionNames = $request->option_name;
                 $descriptions = $request->description;
-                $workoutPlans = $request->workout_plan; // Corrected variable name
-                $dietPlans = $request->diet_plan; // Corrected variable name
+                $workoutPlans = $request->workout_plan;
+                $dietPlans = $request->diet_plan;
 
-                // Check if $optionNames and $icons are arrays before using count()
-                if (is_array($optionNames) && count($optionNames) && is_array($descriptions) && count($descriptions)) {
-                    foreach ($optionNames as $index => $optionName) {
-                        // Check if $optionName is not null or an empty string
+                foreach ($optionNames as $index => $optionName) {
+                    $description = isset($descriptions[$index]) ? $descriptions[$index] : '';
+                    $workoutPlan = isset($workoutPlans[$index]) ? json_encode($workoutPlans[$index]) : '';
+                    $dietPlan = isset($dietPlans[$index]) ? json_encode($dietPlans[$index]) : '';
 
-                        $description = isset($descriptions[$index]) ? $descriptions[$index] : '';
-                        $workoutPlan = isset($workoutPlans[$index]) ? json_encode($workoutPlans[$index]) : [];
-                        $dietPlan = isset($dietPlans[$index]) ? json_encode($dietPlans[$index]) : [];
+                    // Check if the submitted option ID exists in the existing options
+                    if (isset($request->option_id[$index]) && in_array($request->option_id[$index], $existingOptionIds)) {
+                        // Update the existing option
+                        $existingOption = QuestionOption::find($request->option_id[$index]);
+                        $existingOption->update([
+                            'option_name' => $optionName,
+                            'description' => $description,
+                            'workout_plan' => $workoutPlan,
+                            'diet_plan' => $dietPlan,
+                        ]);
 
-                        if ($optionName !== null && $optionName !== '') {
-                            $questionOption = new QuestionOption;
-                            $questionOption->question_id = $question->id;
-                            $questionOption->option_name = $optionName;
-                            $questionOption->description = $description;
-                            $questionOption->workout_plan = $workoutPlan;
-                            $questionOption->diet_plan = $dietPlan;
-                            $questionOption->save();
-                        }
+                        // Remove the ID from the existing IDs array to track which IDs were not updated
+                        unset($existingOptionIds[array_search($request->option_id[$index], $existingOptionIds)]);
+                    } else {
+                        // Create a new option if the ID is not found or not provided
+                        $questionOption = new QuestionOption;
+                        $questionOption->question_id = $question->id;
+                        $questionOption->option_name = $optionName;
+                        $questionOption->description = $description;
+                        $questionOption->workout_plan = $workoutPlan;
+                        $questionOption->diet_plan = $dietPlan;
+                        $questionOption->save();
                     }
                 }
+
+                // Delete options that were not updated
+                QuestionOption::whereIn('id', $existingOptionIds)->delete();
             }
 
             return redirect()->route('question.index')->with('message', 'Question Updated Successfully');
         }
-        } catch (\Throwable $th) {
-            return redirect()->route('question.index')->with('error', 'Internal Server Error!');
-        }
+    } catch (\Throwable $th) {
+        return redirect()->route('question.index')->with('error', 'Internal Server Error!');
     }
+}
 
    public function questionOptionView($id){
     try {
@@ -172,8 +174,7 @@ class QuestionController extends Controller
     }
    }
 
-   public function delete(Request $request)
-    {
+   public function delete(Request $request){
         try {
             $id = $request->id;
             $question = Question::find($id);
@@ -189,6 +190,5 @@ class QuestionController extends Controller
                 'message' => "Something with wrong",
             ]);
         }
-
     }
 }
