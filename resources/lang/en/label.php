@@ -84,8 +84,6 @@ return [
   'day_5' => "Day 5",
   'day_6' => "Day 6",
   'day_7' => "Day 7",
-  'workout_plan' => 'Workput Plan',
+  'workout_plan' => 'Workout Plan',
   'diet_plan' => 'Diet Plan'
-
-
 ];

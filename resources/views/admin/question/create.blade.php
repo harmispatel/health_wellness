@@ -81,7 +81,6 @@
                                                     {{ trans('label.description') }} ----- </strong></label>
                                             <input type="text" name="description[]" id="description"
                                                 class="form-control" />
-
                                         </div>
                                     </div>
                                     <div class="col-md-6 additional-info mt-2">

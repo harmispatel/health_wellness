@@ -107,4 +107,40 @@ class UserController extends BaseController
             return $this->sendResponse(null,'Something Went wrong',false);
         }
     }
+
+    public function userList(){
+        try {
+            $userList = User::where('role_id', 2)->get(); // Retrieve all user coaches with role_id 2
+    
+            if($userList->isEmpty()){
+                return $this->sendResponse(null, 'No coach found', false);
+            }
+    
+            $userData = [];
+            foreach($userList as $userCoach){
+                if($userCoach->gender == 0){
+                    $gender = 'male';
+                }elseif($userCoach->gender == 1){
+                    $gender = 'female';
+                }else{
+                    $gender = 'other';
+                }
+                $data = [
+                    'id' => $userCoach->id,
+                    'name' => $userCoach->name,
+                    'email' => $userCoach->email,
+                    'gender' => $gender,
+                    'role_id' => $userCoach->role_id,
+                    'status' => $userCoach->status,
+                    'image' => isset($userCoach->image) ? asset('public/images/uploads/user_images/' . $userCoach->image) : asset("public/images/uploads/user_images/no-image.png"),
+                ];
+                $userData[] = $data; // Append each coach's data to the $userData array
+            }
+    
+            return $this->sendResponse($userData, 'Coach Data retrieved successfully', true);
+        } catch (\Throwable $th) {
+            return $this->sendResponse(null, 'Something went wrong', false);
+        }
+    }
+    
 }

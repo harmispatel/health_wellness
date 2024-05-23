@@ -117,11 +117,7 @@
                                                         @else
                                                             @php $workout_plan = json_decode($option->workout_plan) @endphp
                                                             
-                                                           
-                                                           
                                                             @foreach ($workout_plan as $day => $workout)
-                                                            
-                                                            
                                                                 <div class="form-group mt-2">
                                                                     <label for="workout_plan" class="form-label"><strong>{{ trans('label.' . ($day)) }}</strong></label>
                                                                     <input type="text" name="workout_plan[{{ $index }}][{{ $day }}]" id="workout_plan" class="form-control" value="{{ $workout }}">
@@ -141,9 +137,7 @@
                                                         @else
                                                             @php $diet_plan = json_decode($option->diet_plan) @endphp
                                                         
-                                                         
                                                             @foreach ($diet_plan as $day => $diet)
-
                                                                 <div class="form-group mt-2">
                                                                     <label for="diet_plan" class="form-label"><strong>{{ trans('label.' . ($day)) }}</strong></label>
                                                                     <input type="text" name="diet_plan[{{ $index }}][{{ $day }}]" id="diet_plan" class="form-control" value="{{ $diet }}">

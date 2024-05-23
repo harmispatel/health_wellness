@@ -27,7 +27,7 @@ class UserRequest extends FormRequest
         {
             $rules = 
             [
-                'name' => 'required',
+                'name' => 'required|unique:mysql.users,name,'.decrypt($this->id),
                 'email' => 'required|email|unique:mysql.users,email,'.decrypt($this->id),
                 'confirm_password' =>'same:password',
                 'role_id' => 'required',

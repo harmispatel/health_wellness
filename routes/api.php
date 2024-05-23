@@ -32,4 +32,4 @@ Route::get('getAdvertisementPicture',[UserController::class,'getAdvertisementPic
 Route::post('register',[UserController::class,'register']);
 Route::post('QuestionAndOptionStore',[QuestionController::class,'QuestionAndOptionStore'])->middleware('auth:sanctum');
 Route::get('UserWorkoutPlan',[QuestionController::class,'UserWorkoutPlan'])->middleware('auth:sanctum');
-
+Route::get('userList',[UserController::class,'userList'])->middleware('auth:sanctum');

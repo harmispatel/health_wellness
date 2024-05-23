@@ -29,7 +29,6 @@ class QuestionController extends Controller
              }
              return view('admin.question.index');
        } catch (\Throwable $th) {
-        dd($th);
         return redirect()->back()->with('error', 'Internal Server Error');
        }
     }
