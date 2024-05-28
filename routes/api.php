@@ -22,14 +22,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     
 });
 
+// UserController
 //login
-
-Route::post('login',[UserController::class,'login']);
-
-Route::get('questionList',[QuestionController::class,'getQuestionList']);
+Route::post('login',[UserController::class,'login'])->name('login');
 Route::get('getUsers',[UserController::class,'getUsers']);
 Route::get('getAdvertisementPicture',[UserController::class,'getAdvertisementPicture']);
 Route::post('register',[UserController::class,'register']);
+Route::get('userList',[UserController::class,'userList'])->middleware('auth:sanctum');
+Route::get('checkIsAnswered',[UserController::class,'checkIsAnswered'])->middleware('auth:sanctum');
+
+// questionController
+Route::get('questionList',[QuestionController::class,'getQuestionList']);
 Route::post('QuestionAndOptionStore',[QuestionController::class,'QuestionAndOptionStore'])->middleware('auth:sanctum');
 Route::get('UserWorkoutPlan',[QuestionController::class,'UserWorkoutPlan'])->middleware('auth:sanctum');
-Route::get('userList',[UserController::class,'userList'])->middleware('auth:sanctum');

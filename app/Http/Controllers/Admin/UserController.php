@@ -137,7 +137,6 @@ class UserController extends Controller
             ]);
         }
     }
-
     public function edit(Request $request, $id)
     {
        $id = decrypt($id);

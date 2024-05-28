@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Api\BaseController as BaseController;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\QuestionAnswer;
+use App\Models\Question;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends BaseController
 {
@@ -141,6 +144,24 @@ class UserController extends BaseController
         } catch (\Throwable $th) {
             return $this->sendResponse(null, 'Something went wrong', false);
         }
+    }
+
+    public function checkIsAnswered(){   
+       $user = auth()->user();    
+        try {
+            $questions = Question::get();
+
+            foreach($questions as $que){
+                $questionAnswer = QuestionAnswer::where('question_id',$que->id)->where('user_id',$user->id)->first();
+          
+                if (!$questionAnswer) {
+                    return $this->sendResponse(null, 'User has not answered all questions', false);
+                }        
+            }        
+            return $this->sendResponse(null, 'User has given all the answers', true);
+        } catch (\Throwable $th) {
+            return $this->sendResponse(null, 'something went wrong', false);
+        }        
     }
     
 }
